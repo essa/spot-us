@@ -21,6 +21,10 @@ module Validateable
   def self.append_features(base)
     super
     base.send(:include, ActiveRecord::Validations)
+
+    def base.human_attribute_name(attr)
+      attr
+    end
   end
 end
 

@@ -10,30 +10,32 @@ class DummyPersonForTestOfValidateable
 end
 
 describe "validateable module" do
+  Person = DummyPersonForTestOfValidateable
+
   describe "validation" do
     it "handles valid record" do
-      person = DummyPersonForTestOfValidateable.new
+      person = Person.new
       person.age = '47'
       person.emails = 'tnakajima@brain-tokyo.jp'
       person.should be_valid
     end
 
     it "handles validates_nemericality_of" do
-      person = DummyPersonForTestOfValidateable.new
+      person = Person.new
       person.age = 'not a number'
       person.emails = 'tnakajima@brain-tokyo.jp'
       person.should_not be_valid
     end
 
     it "handles validates_length_of" do
-      person = DummyPersonForTestOfValidateable.new
+      person = Person.new
       person.age = '47'
       person.emails = 'tnakajima' * 1000 + '@brain-tokyo.jp'
       person.should_not be_valid
     end
 
     it "handles validates_format_of" do
-      person = DummyPersonForTestOfValidateable.new
+      person = Person.new
       person.age = '47'
       person.emails = 'tnakajima'
       person.should_not be_valid
@@ -42,7 +44,7 @@ describe "validateable module" do
 
   describe "error message" do
     it "handles error messages" do
-      person = DummyPersonForTestOfValidateable.new
+      person = Person.new
       person.age = 'not a number'
       person.emails = 'tnakajima'
       person.should_not be_valid
@@ -52,3 +54,4 @@ describe "validateable module" do
     end
   end
 end
+
