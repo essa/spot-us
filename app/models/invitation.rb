@@ -19,6 +19,10 @@ class Invitation
     @emails = []
   end
 
+  def url
+    "http://spot.us/#{news_items_path(@news_item)}"
+  end
+
   def validate
     super
 
@@ -33,6 +37,10 @@ class Invitation
   def email_addresses_text=(text)
     @email_addresses_text = text
     parse_email_addresses
+  end
+
+  def send_emails
+    Mailer.deliver_invitation_mail(self)
   end
 
   private

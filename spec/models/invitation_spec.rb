@@ -16,26 +16,28 @@ describe Invitation do
     invitation.should be_valid
   end
 
-  it 'requires sender, email_addresses_text and newsitem' do
-    invitation = Invitation.new
-    invitation.should_not be_valid
-    invitation.errors.on(:sender).should_not be_nil
-    invitation.errors.on(:email_addresses_text).should_not be_nil
-    invitation.errors.on(:news_item).should_not be_nil
-  end
+  describe "error checking" do
+    it 'requires sender, email_addresses_text and newsitem' do
+      invitation = Invitation.new
+      invitation.should_not be_valid
+      invitation.errors.on(:sender).should_not be_nil
+      invitation.errors.on(:email_addresses_text).should_not be_nil
+      invitation.errors.on(:news_item).should_not be_nil
+    end
 
-  it 'requires sender be a User' do
-    invitation = Invitation.new
-    invitation.sender = 'should be NewsItem'
-    invitation.should_not be_valid
-    invitation.errors.on(:sender).should_not be_nil
-  end
+    it 'requires sender be a User' do
+      invitation = Invitation.new
+      invitation.sender = 'should be NewsItem'
+      invitation.should_not be_valid
+      invitation.errors.on(:sender).should_not be_nil
+    end
 
-  it 'requires newsitem be a NewsItem' do
-    invitation = Invitation.new
-    invitation.news_item = 'should be NewsItem'
-    invitation.should_not be_valid
-    invitation.errors.on(:news_item).should_not be_nil
+    it 'requires newsitem be a NewsItem' do
+      invitation = Invitation.new
+      invitation.news_item = 'should be NewsItem'
+      invitation.should_not be_valid
+      invitation.errors.on(:news_item).should_not be_nil
+    end
   end
 
   describe 'parsing email addresses' do
@@ -95,6 +97,25 @@ describe Invitation do
 
     def make_invitation
       invitation = Invitation.new
+      invitation.sender = @user
+      invitation.news_item = @news_item
+      invitation.message = 'Check this'
+      invitation
+    end
+  end
+
+
+  describe 'sending emails' do
+    it 'should send a email' do
+      invitation = make_invitation("tnakajima@brain-tokyo.jp")
+      Mailer.should_receive(:deliver_invitation_mail).with(invitation).once
+      invitation.send_emails
+    end
+
+
+    def make_invitation(addr)
+      invitation = Invitation.new
+      invitation.email_addresses_text = addr
       invitation.sender = @user
       invitation.news_item = @news_item
       invitation.message = 'Check this'
