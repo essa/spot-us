@@ -67,8 +67,30 @@ describe Invitation do
       invitation = make_invitation
       invitation.email_addresses_text = 'tnakajima@brain-tokyo.jp'
       invitation.should be_valid
-      invitation.should have(1).emails
+
+      # ??? "should have " causes a DEPRECATION WARNING, I can't figure out why'
+      #invitation.should have(1).emails
+
       invitation.emails[0].should == 'tnakajima@brain-tokyo.jp'
+    end
+
+    it 'can parse two email_addresses' do
+      invitation = make_invitation
+      invitation.email_addresses_text = 'tnakajima@brain-tokyo.jp, dcohn1@gmail.com'
+      invitation.should be_valid
+      #invitation.should have(2).emails
+      invitation.emails[0].should == 'tnakajima@brain-tokyo.jp'
+      invitation.emails[1].should == 'dcohn1@gmail.com'
+    end
+
+    it 'can parse three email_addresses' do
+      invitation = make_invitation
+      invitation.email_addresses_text = 'tnakajima@brain-tokyo.jp, dcohn1@gmail.com, desi@hashrocket.com'
+      invitation.should be_valid
+      #invitation.should have(3).emails
+      invitation.emails[0].should == 'tnakajima@brain-tokyo.jp'
+      invitation.emails[1].should == 'dcohn1@gmail.com'
+      invitation.emails[2].should == 'desi@hashrocket.com'
     end
 
     def make_invitation

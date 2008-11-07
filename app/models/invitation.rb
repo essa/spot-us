@@ -9,6 +9,7 @@ class Invitation
 
   UserName = '[^@\s]+'
   DomainName = '(?:[-a-z0-9]+\.)+[a-z]{2,}'
+  AddressRegexp = %r{\A\s*(#{UserName}@#{DomainName})\s*\Z}
   EmailsRegexp = %r{\A\s*(#{UserName}@#{DomainName})\s*(,\s*(#{UserName}@#{DomainName}))*\s*\Z}
 
   validates_format_of       :email_addresses_text, :with => EmailsRegexp, :allow_blank => false
@@ -37,9 +38,10 @@ class Invitation
   private
 
   def parse_email_addresses
-    if @email_addresses_text =~ EmailsRegexp
-      p Regexp.last_match.to_a
-      @emails << Regexp.last_match(0)
+    @email_addresses_text.split(',').each do |addr|
+      if addr =~ EmailsRegexp
+        @emails << Regexp.last_match(1)
+      end
     end
   end
 end
