@@ -5,10 +5,11 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :donations, :affiliations, :pledges, :profiles, :pages, :stories
   map.resources :tips, :has_many => :affiliations
   map.resources :pitches, :member => {:feature => :post}
+  map.resources :invitations
 
   # TODO: remove when done
   map.resources :ui
-  
+
   map.resource :user
 
   map.resource :session
@@ -19,10 +20,10 @@ ActionController::Routing::Routes.draw do |map|
   map.resource :amounts, :name_prefix => 'myspot_donations_',
                          :path_prefix => 'myspot/donations',
                          :controller  => 'myspot/donation_amounts'
-                         
+
   map.namespace :admin do |admin|
     admin.resources :users, :member => {:log_in_as => :get, :approve => :put}
-    admin.resources :credits 
+    admin.resources :credits
     admin.resources :pitches, :member => { :fact_checker_chooser => :get }
     admin.resources :tips
   end

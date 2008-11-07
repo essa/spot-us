@@ -16,7 +16,7 @@ describe "/pitches/show.html.haml" do
     do_render
     template.should have_tag('h2.headline', /#{@pitch.headline}/i)
   end
-  
+
   it "should have an edit button if the current user is the creator of the pitch" do
     template.stub!(:logged_in?).and_return(true)
     template.stub!(:current_user).and_return(@pitch.user)
@@ -49,7 +49,7 @@ describe "/pitches/show.html.haml" do
     do_render
     template.should have_tag('img[src = ?]', "/images/photo")
   end
-  
+
   it "should not display a photo if there isn't one" do
     assigns[:pitch].stub!(:featured_image?).and_return(false)
     do_render
@@ -59,6 +59,11 @@ describe "/pitches/show.html.haml" do
   it "not blow up with related pitches" do
     @pitch.tips = [Factory(:tip), Factory(:tip)]
     do_render
+  end
+
+  it "should not have a link for the invitation" do
+    do_render
+    template.should_not have_tag('a[href=?]', new_invitation_path(:news_item_id=>@pitch.id))
   end
 
   describe "with a logged in user that hasn't donated" do
@@ -101,10 +106,22 @@ describe "/pitches/show.html.haml" do
     end
   end
 
+  describe "with a logged user who is willing to tell a friend" do
+    before do
+      @user = Factory(:user)
+      template.stub!(:logged_in?).and_return(true)
+      template.stub!(:current_user).and_return(@user)
+    end
+
+    it "should have a link for the invitation" do
+      do_render
+      template.should have_tag('a[href=?]', new_invitation_path(:news_item_id=>@pitch.id))
+    end
+  end
+
   def do_render
     render '/pitches/show.html.haml'
   end
-
 end
 
 
