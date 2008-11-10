@@ -4,6 +4,8 @@ class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
   include AuthenticatedSystem
   include SslRequirement
+  
+  cache_sweeper :home_sweeper, :except => [:index, :show]
 
   helper_method :start_story_path
 
@@ -24,12 +26,17 @@ class ApplicationController < ActionController::Base
 
   protected
 
-  def can_create?
-    true
-  end
+    def can_create?
+      true
+    end
 
-  def can_edit?
-    true
-  end
+    def can_edit?
+      true
+    end
+    
+    def update_balance_cookie
+      return if not logged_in?    
+      cookies[:balance_text] = render_to_string(:partial => 'layouts/balance')
+    end
   
 end

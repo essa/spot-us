@@ -32,6 +32,7 @@ describe SessionsController do
   it "should create a donation for non-logged in user" do
     user = Factory(:user, :email => 'user@example.com', :password => 'test')
     donations = mock(:donations)
+    donations.stub!(:unpaid).and_return([])
     user.stub!(:donations).and_return(donations)
     User.stub!(:authenticate).and_return(user)
     donations.should_receive(:create).with(:pitch_id=>1, :amount=>25)
@@ -58,6 +59,26 @@ describe SessionsController do
     Factory(:user, :email => 'user@example.com', :password => 'test')
     post :create, :email => 'user@example.com', :password => 'test', :remember_me => "1"
     response.cookies["auth_token"].should_not be_nil
+  end
+  
+  it 'sets the current user full name cookie' do
+    user = Factory(:user, :first_name => "Bob", :last_name => "Levine", :email => 'user@example.com', :password => 'test')
+    post :create, :email => 'user@example.com', :password => 'test'
+    response.cookies["current_user_full_name"].first.should == "Bob Levine"
+  end
+  
+  it 'clears the current user full name cookie when logging out' do
+    user = Factory(:user, :first_name => "Bob", :last_name => "Levine", :email => 'user@example.com', :password => 'test')
+    post :create, :email => 'user@example.com', :password => 'test'
+    get :destroy
+    response.cookies["current_user_full_name"].first.should be_nil
+  end
+  
+  it 'clears the balance text cookie when logging out' do
+    user = Factory(:user, :first_name => "Bob", :last_name => "Levine", :email => 'user@example.com', :password => 'test')
+    post :create, :email => 'user@example.com', :password => 'test'
+    get :destroy
+    response.cookies["balance_text"].first.should be_nil
   end
   
   it 'does not remember me' do

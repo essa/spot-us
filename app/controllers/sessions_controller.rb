@@ -9,11 +9,9 @@ class SessionsController < ApplicationController
   def create
     self.current_user = User.authenticate(params[:email], params[:password])
     if logged_in?
-      if params[:remember_me] == "1"
-        current_user.remember_me unless current_user.remember_token?
-        cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
-      end
-      
+      handle_remember_me
+      create_current_login_cookie
+      update_balance_cookie
       handle_first_donation_for_non_logged_in_user
       redirect_back_or_default('/')
     else
@@ -25,6 +23,8 @@ class SessionsController < ApplicationController
   def destroy
     self.current_user.forget_me if logged_in?
     cookies.delete :auth_token
+    cookies.delete :balance_text
+    cookies.delete :current_user_full_name
     reset_session
     flash[:notice] = "Later. Hope to see you again soon."
     redirect_back_or_default('/')
@@ -32,11 +32,22 @@ class SessionsController < ApplicationController
   
   protected
   
+    def create_current_login_cookie
+      cookies[:current_user_full_name] = current_user.full_name
+    end
+  
     def handle_first_donation_for_non_logged_in_user
       if session[:news_item_id]
         self.current_user.donations.create(:pitch_id => session[:news_item_id], :amount => session[:donation_amount])
         session[:news_item_id] = nil
         session[:donation_amount] = nil
+      end
+    end
+    
+    def handle_remember_me
+      if params[:remember_me] == "1"
+        current_user.remember_me unless current_user.remember_token?
+        cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
       end
     end
     
