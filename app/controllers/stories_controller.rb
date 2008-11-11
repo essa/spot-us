@@ -2,6 +2,34 @@ class StoriesController < ApplicationController
   before_filter :can_view?, :only => [:show]  
   resources_controller_for :stories
   
+  def accept
+    story = find_resource
+    story.accept!
+    flash[:notice] = "Your story has been submitted to spot.us personnel to be published" 
+    redirect_back_or_default("/")
+  end
+  
+  def reject
+    story = find_resource
+    story.reject!
+    flash[:notice] = "Your story has been sent back to the reporter for edits"
+    redirect_back_or_default("/")
+  end
+  
+  def fact_check
+    story = find_resource
+    story.verify!
+    flash[:notice] = "Your story has been sent to the fact checker"
+    redirect_back_or_default("/")
+  end
+  
+  def publish
+    story = find_resource
+    story.publish!
+    flash[:notice] = "Your story has been published"
+    redirect_back_or_default("/")
+  end
+  
   protected
     def can_view?
       story = find_resource
@@ -24,5 +52,9 @@ class StoriesController < ApplicationController
           :flash => "You cannot edit this story, contact info@spot.us", 
           :redirect => story_url(story))
       end
+    end
+    
+    def find_resources
+      @stories = Story.published
     end
 end
