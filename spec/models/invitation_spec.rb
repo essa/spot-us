@@ -106,10 +106,17 @@ describe Invitation do
 
 
   describe 'sending emails' do
+    it 'should create a email with invitation' do
+      invitation = make_invitation("tnakajima@brain-tokyo.jp")
+      mail = invitation.send(:create_email)
+      mail.body.should match %r[http://spot.us/news_items/#{@news_item.id}]
+      mail.body.should match /#{invitation.message}/
+    end
+
     it 'should send a email' do
       invitation = make_invitation("tnakajima@brain-tokyo.jp")
       Mailer.should_receive(:deliver_invitation_mail).with(invitation).once
-      invitation.send_emails
+      invitation.send_email
     end
 
 

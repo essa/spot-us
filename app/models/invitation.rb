@@ -39,7 +39,7 @@ class Invitation
     parse_email_addresses
   end
 
-  def send_emails
+  def send_email
     Mailer.deliver_invitation_mail(self)
   end
 
@@ -51,5 +51,9 @@ class Invitation
         @emails << Regexp.last_match(1)
       end
     end
+  end
+
+  def create_email
+    Mailer.create_invitation_mail(self)
   end
 end

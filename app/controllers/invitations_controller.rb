@@ -16,7 +16,7 @@ class InvitationsController < ApplicationController
   def create
     @invitation = make_invitation(params[:invitation])
     if @invitation.valid?
-      @invitation.send_emails
+      @invitation.send_email
     else
       flash[:error] = "email error"
     end
