@@ -6,7 +6,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :stories, :member => {:accept => :put, :reject => :put, :fact_check => :put, :publish => :put}
   map.resources :tips, :has_many => :affiliations
   map.resources :pitches, :member => {:feature => :post}
-  map.resources :invitations
+  map.resources :invitations, :collection => {:validate => :post }
 
   # TODO: remove when done
   map.resources :ui
