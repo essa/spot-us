@@ -63,7 +63,7 @@ describe "/pitches/show.html.haml" do
 
   it "should not have a link for the invitation" do
     do_render
-    template.should_not have_tag('a[href=?]', new_invitation_path(:news_item_id=>@pitch.id))
+    template.should_not have_tag('a[href=?]', new_invitation_path('invitation[news_item_id]'=>@pitch.id))
   end
 
   describe "with a logged in user that hasn't donated" do
@@ -115,7 +115,7 @@ describe "/pitches/show.html.haml" do
 
     it "should have a link for the invitation" do
       do_render
-      template.should have_tag('a[href=?]', new_invitation_path(:news_item_id=>@pitch.id))
+      template.should have_tag('a[href=?]', new_invitation_path('invitation[news_item_id]'=>@pitch.id))
     end
   end
 

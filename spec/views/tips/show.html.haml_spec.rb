@@ -57,7 +57,7 @@ describe "/tips/show.html.haml" do
 
   it "should not have a link for the invitation" do
     do_render
-    template.should_not have_tag('a[href=?]', new_invitation_path(:news_item_id=>@tip.id))
+    template.should_not have_tag('a[href=?]', new_invitation_path('invitation[news_item_id]'=>@tip.id))
   end
 
   def do_render
@@ -78,7 +78,7 @@ describe "/tips/show.html.haml" do
 
     it "should have a link for the invitation" do
       do_render
-      template.should have_tag('a[href=?]', new_invitation_path(:news_item_id=>@tip.id))
+      template.should have_tag('a[href=?]', new_invitation_path('invitation[news_item_id]'=>@tip.id))
     end
   end
 end
