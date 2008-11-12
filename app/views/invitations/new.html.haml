@@ -12,16 +12,21 @@
     - form_remote_tag :url=> {:action=>:validate, :mothod=>:post}, :html => { :name=>:invitation_mail, :id=>:invitation_mail} do
       = hidden_field_tag 'invitation[news_item_id]', @invitation.news_item.id
       = text_area_tag 'invitation[email_addresses]', '', :rows=>3, :cols=>18, :id=>:email_addresses
-      = text_area_tag 'invitation[message]', 'abc', :rows=>8, :cols=>18
+      = text_area_tag 'invitation[message]', pre_written_message(@invitation.news_item), :rows=>8, :cols=>18
       #mail_message
-
       - params = "jQuery('#invitation_mail').serialize()"
       - before = "jQuery('#mail_message').html('#{InvitationsHelper::Messages[:sending]}')"
       - after = "jQuery('#email_addresses').attr('value', '')"
       - send_mail_func = remote_function(:method=>:post, :url=> { :action=>:create }, :with => params, :before=> before, :after=>after)
-      = image_tag('send.png', :onclick=>"#{send_mail_func} ;")
+      - if @invitation.sender
+        = image_tag('send.png', :onclick=>"#{send_mail_func} ;")
+      - else
+        You need to
+        = link_to('login', new_session_path)
+        to send a mail.
 
       = observe_field :email_addresses, :method=>:post, :url=> { :action=>:validate }, :with => params
+
 
   .span-220.column_v.box_white
     %h3

@@ -5,9 +5,11 @@ sendor is <%= @invitation.sender.full_name  %>
 sendor address is <%= @invitation.sender.email  %>
 
 topic is <%= @invitation.news_item.headline  %>
-messsage is <%= @invitation.message  %>
-
-url is http://spot.us/news_items/<%= @invitation.news_item.id %>
+messsage is
+----------------------------------------------------
+<%= @invitation.message  %>
+----------------------------------------------------
+The url is http://spot.us/news_items/<%= @invitation.news_item.id %>
 
 Sincerely,
 David Cohn

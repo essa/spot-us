@@ -1,9 +1,9 @@
 class InvitationsController < ApplicationController
   include InvitationsHelper
-  before_filter :login_required
 
   def new
     @invitation = make_invitation(params[:invitation])
+    store_location
   end
 
   def validate

@@ -15,13 +15,23 @@ describe InvitationsController do
   end
 
   describe "when not logged on" do
-    before(:each) do
-      get :new, :news_item_id=>@news_item.id
+    it "assigns invitation with specified news_item and null user field" do
+      get :new, :invitation => { :news_item_id=>@news_item.id }
+      response.should be_success
+      response.should render_template('new')
+      assigns(:invitation).should_not be_nil
+      assigns(:invitation).should be_kind_of(Invitation)
+      assigns(:invitation).sender.should be_nil
+      assigns(:invitation).news_item.id.should == @news_item.id
     end
-    it_denies_access
+
+    it "should not send mails so that we don't become a spammer" do
+      Mailer.should_not_receive(:deliver_invitation_mail)
+      post :create, :invitation => { :news_item_id=>@news_item.id, :email_addresses=>"tnakajima@brain-tokyo.jp" }
+    end
   end
 
-  describe "on GET to /tips/new" do
+  describe "on GET to /tips/new with a loged on user" do
     before(:each) do
       controller.stub!(:current_user).and_return(@user)
       get :new, :invitation => { :news_item_id=>@news_item.id }
