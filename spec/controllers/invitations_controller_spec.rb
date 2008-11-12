@@ -75,6 +75,7 @@ describe InvitationsController do
     end
   end
 
+  # simple matcher for jQuery
   def have_message(id_, message)
     match(%r[jQuery\(\"\##{id_}\"\)\.html\(\"#{message}\"\)])
   end
