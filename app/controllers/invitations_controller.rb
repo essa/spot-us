@@ -1,12 +1,6 @@
 class InvitationsController < ApplicationController
+  include InvitationsHelper
   before_filter :login_required
-
-  Messages = {
-    :valid => "address is valid",
-    :invalid => "address is invalid",
-    :sent => "an e-mail was set",
-    :error => "error happened while sending your mail",
-  }
 
   def new
     @invitation = make_invitation(params[:invitation])

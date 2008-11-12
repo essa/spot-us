@@ -13,9 +13,11 @@ describe "/invitations/new.html.haml" do
   it "should render new form" do
     render "/invitations/new.html.haml"
 
-    p response.body
-    response.should have_tag("form[action=?][method=post]", "/invitations/create") do
-      with_tag "input[type=textarea][name=emails]"
+    response.should have_tag("form#invitation_mail") do
+      with_tag "input[type=hidden][name='invitation[news_item_id]'][value=#{@news_item.id}]"
+      with_tag "textarea[name='invitation[email_addresses]']"
+      with_tag "textarea[name='invitation[message]']"
+      with_tag "#mail_message"
     end
   end
 
