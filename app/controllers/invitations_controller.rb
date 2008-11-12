@@ -1,6 +1,13 @@
 class InvitationsController < ApplicationController
   before_filter :login_required
 
+  Messages = {
+    :valid => "address is valid",
+    :invalid => "address is invalid",
+    :sent => "an e-mail was set",
+    :error => "error happened while sending your mail",
+  }
+
   def new
     @invitation = make_invitation(params[:invitation])
   end
@@ -8,23 +15,22 @@ class InvitationsController < ApplicationController
   def validate
     @invitation = make_invitation(params[:invitation])
     if @invitation.valid?
-      render(:update) do |page|
-        page.replace_html :mail_message, "address is valid"
-      end
+      display_message(:valid)
     else
-      render(:update) do |page|
-        page.replace_html :mail_message, "address is invalid"
-      end
+      display_message(:invalid)
     end
   end
 
-  def creajqeury seriarizete
+  def create
+    sent = false
     @invitation = make_invitation(params[:invitation])
     if @invitation.valid?
       @invitation.send_email
-    else
-      flash[:error] = "email error"
+      display_message(:sent)
+      sent = true
     end
+  ensure
+    display_message(:error) unless sent
   end
 
   private
@@ -36,5 +42,13 @@ class InvitationsController < ApplicationController
     invitation.email_addresses_text = params[:email_addresses].to_s
     invitation.message = params[:message]
     invitation
+  end
+
+  def display_message(message_id)
+    message = Messages[message_id]
+    raise "can't happen. invalid message_id #{message_id}" unless message
+    render(:update) do |page|
+      page.replace_html :mail_message, message
+    end
   end
 end

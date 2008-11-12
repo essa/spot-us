@@ -2,6 +2,8 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe InvitationsController do
 
+  Messages = InvitationsController::Messages
+
   #Delete this example and add some real ones
   it "should use InvitationsController" do
     controller.should be_an_instance_of(InvitationsController)
@@ -43,13 +45,13 @@ describe InvitationsController do
     it "should validate a valid e-mail addresse" do
       post :validate, :invitation => { :news_item_id=>@news_item.id, :email_addresses=>"tnakajima@brain-tokyo.jp" }
       response.should be_success
-      flash[:error].should be_nil
+      response.body.should have_message(:mail_message, Messages[:valid])
     end
 
     it "report an error if an invalid e-mail addresse is posted" do
       post :validate, :invitation => { :news_item_id=>@news_item.id, :email_addresses=>"should be email address" }
       response.should be_success
-      flash[:error].should_not be_nil
+      response.body.should have_message(:mail_message, Messages[:invalid])
     end
   end
 
@@ -62,14 +64,18 @@ describe InvitationsController do
       Mailer.should_receive(:deliver_invitation_mail).once
       post :create, :invitation => { :news_item_id=>@news_item.id, :email_addresses=>"tnakajima@brain-tokyo.jp" }
       response.should be_success
-      flash[:error].should be_nil
+      response.body.should have_message(:mail_message, Messages[:sent])
     end
 
     it "report an error if an invalid e-mail addresse is posted" do
       Mailer.should_not_receive(:deliver_invitation_mail)
       post :create, :invitation => { :news_item_id=>@news_item.id, :email_addresses=>"should be email address" }
       response.should be_success
-      flash[:error].should_not be_nil
+      response.body.should have_message(:mail_message, Messages[:error])
     end
+  end
+
+  def have_message(id_, message)
+    match(%r[jQuery\(\"\##{id_}\"\)\.html\(\"#{message}\"\)])
   end
 end
