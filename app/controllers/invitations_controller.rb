@@ -8,12 +8,17 @@ class InvitationsController < ApplicationController
   def validate
     @invitation = make_invitation(params[:invitation])
     if @invitation.valid?
+      render(:update) do |page|
+        page.replace_html :mail_message, "address is valid"
+      end
     else
-      flash[:error] = "email error"
+      render(:update) do |page|
+        page.replace_html :mail_message, "address is invalid"
+      end
     end
   end
 
-  def create
+  def creajqeury seriarizete
     @invitation = make_invitation(params[:invitation])
     if @invitation.valid?
       @invitation.send_email

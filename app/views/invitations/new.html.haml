@@ -9,8 +9,22 @@
       By E-mail
       .double_content_border
     Separate multipul e-mail address with comas.
-    - form_for(@invitation) do |f|
-      %f.textarea :emails
+    - form_remote_tag :html => { :action => url_for(:action => "create") , :name=>:invitation_mail, :id=>:invitation_mail} do
+
+
+      = hidden_field_tag 'invitation[news_item_id]', @invitation.news_item.id
+      = text_area_tag 'invitation[email_addresses]', '', :rows=>3, :cols=>18, :id=>:emails_text
+      = text_area_tag 'invitation[message]', 'abc', :rows=>8, :cols=>18
+      #mail_message
+        hhhhhhhhhhhhhhhhhhhhhhh
+      = image_tag('send.png')
+
+      - params = "jQuery('#invitation_mail').serialize()"
+      = observe_field :emails_text, :method=>:post, :url=> { :action=>:validate }, :with => params
+
+    :javascript
+      // alert(jQuery('#invitation_mail').serialize()) ;
+
   .span-220.column_v.box_white
     %h3
       = image_tag('globe.png')
