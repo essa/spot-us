@@ -1,0 +1,24 @@
+
+- @title = "Spot.us - Tell a Friend"
+
+.block-spacer
+  %h2 Tell Your Friends
+  .span-220.column_v.box_white
+    %h3
+      = image_tag('email.png')
+      By E-mail
+      .double_content_border
+    Separate multipul e-mail address with comas.
+    - form_for(@invitation) do |f|
+      %f.textarea :emails
+  .span-220.column_v.box_white
+    %h3
+      = image_tag('globe.png')
+      Embed Our Objects
+  .span-220.column_v.box_white
+    %h3
+      = image_tag('url_globe.png')
+      Spot.us URL
+
+
+
