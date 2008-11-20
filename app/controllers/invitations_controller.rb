@@ -1,5 +1,6 @@
 class InvitationsController < ApplicationController
   include InvitationsHelper
+  before_filter :check_params
 
   def new
     @invitation = make_invitation(params[:invitation])
@@ -29,10 +30,29 @@ class InvitationsController < ApplicationController
 
   private
 
+  def check_params
+    if params[:invitation].blank?
+      render_not_found
+      false
+    else
+      @news_item = NewsItem.find(params[:invitation][:news_item_id])
+      true
+    end
+  rescue ActiveRecord::RecordNotFound
+    render_not_found
+    false
+  end
+
+  def render_not_found
+      render :file => "#{RAILS_ROOT}/public/404.html",
+             :status => "404 Not Found"
+  end
+
+
   def make_invitation(params)
     invitation = Invitation.new
     invitation.sender = current_user
-    invitation.news_item = NewsItem.find(params[:news_item_id])
+    invitation.news_item = @news_item
     invitation.email_addresses_text = params[:email_addresses].to_s
     invitation.message = params[:message]
     invitation

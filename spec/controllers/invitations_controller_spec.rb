@@ -85,6 +85,23 @@ describe InvitationsController do
     end
   end
 
+  describe "error handling" do
+    it "should render 404 page for an invalid url" do
+      get :new
+      response.should render_template("#{RAILS_ROOT}/public/404.html")
+    end
+
+    it "should render 404 page for an invalid url" do
+      get :new,:invitation => "abcde"
+      response.should render_template("#{RAILS_ROOT}/public/404.html")
+    end
+
+    it "should render 404 page for an invalid news_item_id" do
+      get :new, :invitation => { :news_item_id=>98765 }
+      response.should render_template("#{RAILS_ROOT}/public/404.html")
+    end
+  end
+
   # simple matcher for jQuery
   def have_message(id_, message)
     match(%r[jQuery\(\"\##{id_}\"\)\.html\(\"#{message}\"\)])
